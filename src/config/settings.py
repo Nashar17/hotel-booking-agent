@@ -16,6 +16,8 @@ class Settings:
     ollama_model: str = os.getenv("OLLAMA_MODEL", "deepseek-r1:7b")
     app_title: str = os.getenv("APP_TITLE", "Hotel Booking AI Agent")
     debug: bool = os.getenv("DEBUG", "False").lower() == "true"
+    max_search_results: int = int(os.getenv("MAX_SEARCH_RESULTS", "5"))
+    search_timeout: int = int(os.getenv("SEARCH_TIMEOUT", "30"))
 
 
 def get_settings() -> Settings:
