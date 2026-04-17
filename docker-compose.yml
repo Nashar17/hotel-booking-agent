@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  hotel-booking-agent:
+    build: .
+    container_name: hotel-booking-agent
+    ports:
+      - "8501:8501"
+    environment:
+      # Point to Ollama running on your Windows host machine
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=deepseek-r1:7b
+      - APP_TITLE=Hotel Booking AI Agent
+      - DEBUG=False
+      - MAX_SEARCH_RESULTS=5
+      - SEARCH_TIMEOUT=30
+    extra_hosts:
+      # Allows the container to reach your host machine
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
