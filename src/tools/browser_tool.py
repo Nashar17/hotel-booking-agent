@@ -44,12 +44,20 @@ class HotelSearchTool(BaseTool):
 
     def _run(self, query: str) -> str:
         """
-        Executes the search and returns raw results as a string.
+        Executes two searches and combines results for richer data.
         LangChain calls _run() when an agent uses this tool.
         """
         try:
-            results = self._search.run(query)
-            return results
+            # Primary search with the optimized query
+            results_1 = self._search.run(query)
+
+            # Secondary search with a booking-focused variant
+            booking_query = query + " booking price review"
+            results_2 = self._search.run(booking_query)
+
+            combined = f"Search 1 results:\n{results_1}\n\nSearch 2 results:\n{results_2}"
+            return combined
+        
         except Exception as e:
             return f"Search failed: {str(e)}. Please try a different query."
 
