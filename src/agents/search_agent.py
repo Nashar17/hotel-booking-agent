@@ -15,22 +15,17 @@ class SearchAgent:
     def __init__(self):
         self._tool = HotelSearchTool()
 
-    def _build_query(self, city: str, budget: float) -> str:
+    def _build_query(self, city: str, budget: float, attempt: int = 1) -> str:
         """
-        Builds a clean, effective search query from structured inputs.
-        No LLM involved — Python string formatting is more reliable here.
+        Builds a search query. Second attempt uses a broader phrasing.
         """
-        return f"hotels in {city} Egypt budget under {int(budget)} USD per night"
-
-    def run(self, city: str, budget: float, check_in: str, check_out: str) -> dict:
-        """
-        Builds an optimized search query and fetches real hotel results.
-
-        Returns a dict with:
-          - query: the search string used
-          - raw_results: the raw text from DuckDuckGo
-        """
-        query = self._build_query(city, budget)
+        if attempt == 1:
+            return f"hotels in {city} Egypt EGP price per night under {int(budget)} dollars"
+        else:
+            return f"best hotels {city} Alexandria Egypt Mediterranean coast affordable"
+        
+    def run(self, city: str, budget: float, check_in: str, check_out: str, attempt: int = 1) -> dict:
+        query = self._build_query(city, budget, attempt)
 
         print(f"[SearchAgent] Query built: '{query}'")
         print("[SearchAgent] Fetching results from the web...")

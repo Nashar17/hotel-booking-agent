@@ -23,17 +23,16 @@ class RankingAgent:
         self._prompt = ChatPromptTemplate.from_messages([
             (
                 "system",
-                """You are a strict hotel data extraction engine.
-Extract ONLY hotels that are explicitly mentioned in the raw search text.
+                """You are a strict hotel data extraction engine for Egypt travel.
+Extract ONLY hotels that are explicitly in {city}, Egypt.
 
 Rules:
+- NEVER extract hotels from USA, UK, or any country other than Egypt
+- If the text mentions "{city}" without specifying Egypt, assume it means {city}, Egypt ONLY if the surrounding context is about Egypt
+- If a hotel is clearly in the USA (mentions states like VA, LA, TX, etc.) → skip it completely
+- If a hotel name contains "Inn", "Suites", "Lodge" with a US city context → skip it
 - NEVER invent, guess, or assume hotel names, prices, or ratings
-- If a hotel name is not clearly stated, skip it entirely
-- If a price is not clearly stated, set price_per_night to null
-- If a rating is not clearly stated, set rating to null
-- Only include hotels in {city}, Egypt — ignore all other locations
-- Do NOT include placeholders, generic names, or made-up entries
-- If no real hotels are found, return: {{"hotels": []}}
+- If no Egypt hotels are found, return: {{"hotels": []}}
 - Output ONLY valid JSON, no explanation, no markdown, no code blocks
 
 Required format:
@@ -42,6 +41,7 @@ Required format:
     {{
       "name": "Exact Hotel Name From Text",
       "city": "{city}",
+      "country": "Egypt",
       "price_per_night": 45.0,
       "rating": 4.2,
       "notes": "one sentence from the search text"
@@ -101,7 +101,8 @@ Required format:
         # Filter to only hotels within budget (price not null and within budget)
         within_budget = [
             h for h in hotels
-            if h.get("price_per_night") is None or h["price_per_night"] <= budget
+            if (h.get("price_per_night") is None or h["price_per_night"] <= budget)
+            and h.get("country", "Egypt").lower() == "egypt"
         ]
 
         # Score and sort
