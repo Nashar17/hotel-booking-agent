@@ -33,6 +33,7 @@ User Input → Search Agent → Ranking Agent → Report Agent → UI
 
 ## Project structure
 
+```bash
 hotel-booking-agent/
 ├── src/
 │   ├── agents/
@@ -52,6 +53,7 @@ hotel-booking-agent/
 ├── docker-compose.yml
 ├── requirements.txt
 └── .env.example
+```
 
 ---
 
