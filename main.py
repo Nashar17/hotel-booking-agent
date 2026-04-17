@@ -33,7 +33,7 @@ def run_booking(city: str, budget: float, check_in: str, check_out: str) -> None
 if __name__ == "__main__":
     run_booking(
         city="Cairo",
-        budget=300.0,
+        budget=150.0,
         check_in="2025-08-01",
         check_out="2025-08-04",
     )
