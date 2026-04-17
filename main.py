@@ -1,7 +1,7 @@
 """
-main.py — Entry point for the Hotel Booking AI Agent.
-Calls the BookingGraph and prints the result.
-For the full UI, run: streamlit run src/ui/streamlit_app.py
+main.py — CLI entry point for the Hotel Booking AI Agent.
+For the full UI, run: python -m streamlit run src/ui/streamlit_app.py
+For CLI mode: python main.py
 """
 
 from src.graph.booking_graph import BookingGraph
