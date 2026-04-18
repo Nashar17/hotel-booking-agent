@@ -23,13 +23,22 @@ The system uses three specialized AI agents that work together to search the web
 
 ## How it works
 
-User Input → Search Agent → Ranking Agent → Report Agent → UI
-↑                |
-└── retry if no results found (LangGraph)
+## How it works
 
-1. **Search Agent** — builds a query and fetches real hotel data from the web
-2. **Ranking Agent** — uses DeepSeek-R1 to extract and score hotels by value
-3. **Report Agent** — generates a friendly, human-readable recommendation
+\```
+User types naturally → Parser Agent → extracts city, budget, dates
+                            ↓
+                    (asks for missing info if needed)
+                            ↓
+                   Search Agent → Ranking Agent → Report Agent → Chat response
+                       ↑                |
+                       └── retry if no results (LangGraph)
+\```
+
+1. **Parser Agent** — reads the conversation and extracts city, budget, and dates from natural language. Asks follow-up questions for anything missing.
+2. **Search Agent** — builds a search query and fetches real hotel data from the web
+3. **Ranking Agent** — uses LLM to extract and score hotels by value
+4. **Report Agent** — generates a friendly, human-readable recommendation
 
 ---
 
@@ -37,11 +46,12 @@ User Input → Search Agent → Ranking Agent → Report Agent → UI
 
 | Tool | Purpose |
 |---|---|
-| DeepSeek-R1 (via Ollama) | Local LLM — reasoning and extraction |
 | LangChain | Prompt templates, chains, tool wrappers |
 | LangGraph | Multi-agent orchestration and retry logic |
-| Streamlit | Web UI |
-| DuckDuckGo (ddgs) | Free web search — no API key needed |
+| Ollama + DeepSeek-R1 | Local LLM inference (development) |
+| Groq + Llama 3.3 70B | Cloud LLM inference (deployment) |
+| DuckDuckGo / Tavily | Web search — no paid API needed locally |
+| Streamlit | Conversational chat UI |
 | Docker | Containerization |
 
 ---
@@ -54,7 +64,8 @@ hotel-booking-agent/
 │   ├── agents/
 │   │   ├── search_agent.py       # Builds query and fetches web results
 │   │   ├── ranking_agent.py      # Extracts and scores hotels with LLM
-│   │   └── report_agent.py       # Generates final recommendation
+│   │   ├── report_agent.py       # Generates final recommendation
+│   │   └── parser_agent.py         
 │   ├── tools/
 │   │   └── browser_tool.py       # DuckDuckGo search as LangChain tool
 │   ├── graph/
@@ -62,7 +73,8 @@ hotel-booking-agent/
 │   ├── config/
 │   │   └── settings.py           # Central config loaded from .env
 │   └── ui/
-│       └── streamlit_app.py      # Streamlit web interface
+│       ├── streamlit_app.py      # Original form-based UI (kept for reference)
+│       └── streamlit_chat_app.py # Conversational chat interface (main UI)
 ├── main.py                       # CLI entry point
 ├── Dockerfile
 ├── docker-compose.yml
@@ -117,7 +129,13 @@ Edit `.env` if needed (defaults work out of the box with Ollama).
 
 ## Running the app
 
-### Option A — Streamlit UI (recommended)
+## Conversational chat UI 
+
+```bash
+python -m streamlit run src/ui/streamlit_chat_app.py
+```
+
+###  Streamlit UI 
 
 ```bash
 python -m streamlit run src/ui/streamlit_app.py
@@ -125,13 +143,13 @@ python -m streamlit run src/ui/streamlit_app.py
 
 Open your browser at `http://localhost:8501`
 
-### Option B — CLI mode
+### CLI mode
 
 ```bash
 python main.py
 ```
 
-### Option C — Docker
+###  Docker
 
 ```bash
 docker compose up --build
