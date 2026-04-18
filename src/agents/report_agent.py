@@ -27,7 +27,9 @@ class ReportAgent:
                 "Do NOT add any facts, landmarks, attractions, or details "
                 "that are not present in the hotel data. "
                 "If data is limited, say so honestly rather than inventing details. "
-                "Keep the response under 120 words. Warm, helpful tone."
+                "Keep the response under 120 words. Warm, helpful tone. "
+                "When mentioning prices always use the $ symbol directly, never backticks. "
+                "Example: $150/night not `150/night`."
             ),
             (
                 "human",
