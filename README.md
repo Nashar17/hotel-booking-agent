@@ -2,7 +2,7 @@
 title: Hotel Booking AI Agent
 emoji: 🏨
 colorFrom: blue
-colorTo: teal
+colorTo: green
 sdk: streamlit
 sdk_version: "1.45.0"
 python_version: "3.11"
