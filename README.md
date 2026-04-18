@@ -1,3 +1,16 @@
+---
+title: Hotel Booking AI Agent
+emoji: 🏨
+colorFrom: blue
+colorTo: teal
+sdk: streamlit
+sdk_version: "1.45.0"
+python_version: "3.11"
+app_file: app.py
+pinned: false
+---
+
+
 # 🏨 Hotel Booking AI Agent
 
 A 100% local multi-agent hotel booking assistant powered by DeepSeek-R1, LangGraph, LangChain, and Streamlit.
