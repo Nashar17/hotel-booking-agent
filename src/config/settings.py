@@ -23,7 +23,7 @@ class Settings:
 
     # Groq settings (cloud deployment)
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
-    groq_model: str = os.getenv("GROQ_MODEL", "deepseek-r1-distill-llama-70b")
+    groq_model: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
     # Which backend to use — set USE_GROQ=true in cloud environment
     use_groq: bool = os.getenv("USE_GROQ", "false").lower() == "true"
@@ -41,9 +41,7 @@ class Settings:
         Cloud   → ChatGroq
         All agents call this — zero changes needed in agent files.
         """
-        print(f"[Settings] USE_GROQ env value: '{os.getenv('USE_GROQ')}'")
-        print(f"[Settings] use_groq parsed: {self.use_groq}")
-        
+    
         if self.use_groq:
             from langchain_groq import ChatGroq
             print(f"[Settings] Using Groq cloud LLM: {self.groq_model}")
