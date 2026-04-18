@@ -13,6 +13,8 @@ pinned: false
 
 # 🏨 Hotel Booking AI Agent
 
+🚀 **Live Demo:** [huggingface.co/spaces/Nashar17/hotel-booking-agent](https://huggingface.co/spaces/Nashar17/hotel-booking-agent)
+
 A 100% local multi-agent hotel booking assistant powered by DeepSeek-R1, LangGraph, LangChain, and Streamlit.
 
 The system uses three specialized AI agents that work together to search the web, rank hotels by value, and generate a friendly recommendation — all running on your own machine with no paid APIs.
@@ -143,9 +145,12 @@ Open your browser at `http://localhost:8501`
 
 ## Known limitations
 
-- Search results depend on DuckDuckGo snippet quality. Cairo returns better results than smaller cities.
-- Prices are not always available in search snippets — the ranking agent will note this honestly.
-- Ollama must be running separately (not included in Docker container).
+- Search results depend on DuckDuckGo snippet quality in local mode.
+  Cloud deployment uses Tavily for richer results.
+- Hotel prices are not always available in search snippets — the
+  ranking agent will note this honestly rather than hallucinate.
+- Ollama must be running separately when using Docker locally.
+- For best results, use major Egyptian cities like Cairo or Luxor.
 
 ---
 
