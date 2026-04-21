@@ -1,17 +1,22 @@
 """
 Report Agent — takes ranked hotel data and produces a clean,
-human-readable final response for the Streamlit UI.
+human-readable final recommendation for the Streamlit UI.
+Works for any city worldwide.
 """
 
+import json
+import logging
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from src.config.settings import get_settings
-import json
+
+logger = logging.getLogger(__name__)
 
 
 class ReportAgent:
     """
     Formats ranked hotel data into a polished, human-friendly report.
+    Only uses facts present in the hotel data — never invents details.
     """
 
     def __init__(self):
@@ -22,23 +27,25 @@ class ReportAgent:
         self._prompt = ChatPromptTemplate.from_messages([
             (
                 "system",
-                "You are a hotel recommendation assistant. "
-                "Write ONLY based on the hotel data provided to you. "
-                "Do NOT add any facts, landmarks, attractions, or details "
-                "that are not present in the hotel data. "
-                "If data is limited, say so honestly rather than inventing details. "
-                "Keep the response under 120 words. Warm, helpful tone. "
-                "When mentioning prices always use the $ symbol directly, never backticks. "
-                "Example: $150/night not `150/night`."
+                "You are a friendly hotel recommendation assistant. "
+                "Write ONLY based on the hotel data provided — never invent landmarks, "
+                "attractions, or details not present in the data. "
+                "If price data is limited, say so honestly rather than guessing. "
+                "Keep the response under 200 words. Warm, helpful, conversational tone. "
+                "CRITICAL FORMATTING RULE: Always write prices like this: $150/night — "
+                "NEVER use backticks around prices. NEVER write `150/night` or `$150`. "
+                "The dollar sign must appear directly before the number with no backticks anywhere. "
+                "Mention the city name naturally in the response."
             ),
             (
                 "human",
-                "City: {city}, Egypt\n"
+                "City: {city}\n"
                 "Check-in: {check_in} | Check-out: {check_out}\n"
                 "Budget: ${budget}/night\n\n"
                 "Ranked hotels found:\n{hotels_json}\n\n"
-                "Write a short, friendly recommendation report."
-                "Make clear these hotels are in {city}, Egypt."
+                "Write a short, friendly recommendation. "
+                "Highlight the top pick and briefly mention the runners-up. "
+                "If prices are missing for some hotels, note that honestly."
             ),
         ])
 
@@ -55,19 +62,32 @@ class ReportAgent:
         """
         Generates the final human-readable report.
 
-        Returns a dict with:
-          - report: the formatted string to show the user
-          - top_hotel: the single best hotel dict (for UI display)
+        Returns:
+            {
+                "report": str,          — formatted recommendation string
+                "top_hotel": dict|None  — best hotel dict for UI display
+            }
         """
-        print("[ReportAgent] Generating final recommendation...")
+        logger.info(
+            "ReportAgent generating recommendation for %d hotel(s) in %s",
+            len(ranked_hotels),
+            city,
+        )
 
         if not ranked_hotels:
+            logger.warning("No hotels to report for city=%s", city)
             return {
-                "report": f"Sorry, I couldn't find any hotels in {city} within your ${budget}/night budget. Try increasing your budget or searching a nearby city.",
+                "report": (
+                    f"Sorry, I couldn't find any hotels in **{city}** within your "
+                    f"**${budget}/night** budget. You could try:\n"
+                    f"- Increasing your budget slightly\n"
+                    f"- Searching a nearby major city\n"
+                    f"- Adjusting your travel dates"
+                ),
                 "top_hotel": None,
             }
 
-        # Only pass top 5 to keep the prompt focused
+        # Pass top 5 to keep the prompt focused and tokens low
         top_hotels = ranked_hotels[:5]
         hotels_json = json.dumps(top_hotels, indent=2)
 
@@ -79,7 +99,9 @@ class ReportAgent:
             "hotels_json": hotels_json,
         })
 
+        logger.info("ReportAgent finished — top hotel: %s", ranked_hotels[0].get("name"))
+
         return {
             "report": report,
-            "top_hotel": ranked_hotels[0] if ranked_hotels else None,
+            "top_hotel": ranked_hotels[0],
         }
