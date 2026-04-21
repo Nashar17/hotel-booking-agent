@@ -1,15 +1,16 @@
 """
 main.py — CLI entry point for the Hotel Booking AI Agent.
-For the full UI, run: python -m streamlit run src/ui/streamlit_app.py
+For the full UI, run: python -m streamlit run src/ui/streamlit_chat_app.py
 For CLI mode: python main.py
 """
 
 from src.graph.booking_graph import BookingGraph
+from src.config.settings import setup_logging
 
 
 def run_booking(city: str, budget: float, check_in: str, check_out: str) -> None:
     """Runs the full booking workflow and prints the result."""
-    print(f"\nSearching hotels in {city}, Egypt...")
+    print(f"\nSearching hotels in {city}...")
     print(f"Budget: ${budget}/night | {check_in} → {check_out}\n")
 
     graph = BookingGraph()
@@ -31,9 +32,13 @@ def run_booking(city: str, budget: float, check_in: str, check_out: str) -> None
 
 
 if __name__ == "__main__":
+    from datetime import date, timedelta
+    setup_logging()
+    check_in = (date.today() + timedelta(days=7)).strftime("%Y-%m-%d")
+    check_out = (date.today() + timedelta(days=10)).strftime("%Y-%m-%d")
     run_booking(
-        city="Cairo",
+        city="Paris",
         budget=150.0,
-        check_in="2025-08-01",
-        check_out="2025-08-04",
+        check_in=check_in,
+        check_out=check_out,
     )
