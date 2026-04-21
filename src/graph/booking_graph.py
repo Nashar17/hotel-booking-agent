@@ -122,7 +122,7 @@ def decide_after_ranking(state: BookingState) -> str:
         return "give_up"
 
 
-# ── Graph Builder ─────────────────────────────────────────────────────────────
+# ── Graph Builder ──────────────────────────────────────────────────────────
 
 class BookingGraph:
     """
