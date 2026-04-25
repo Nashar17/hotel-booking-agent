@@ -213,6 +213,4 @@ Add secrets in your HF Space → Settings → Variables and Secrets:
 
 ## 👨‍💻 Author
 
-**Mohamed El-Nashar** — Mechatronics student & AI Engineering enthusiast
-
-[![GitHub](https://img.shields.io/badge/GitHub-Nashar17-black?logo=github)](https://github.com/Nashar17)
+**Mohamed El-Nashar** 
